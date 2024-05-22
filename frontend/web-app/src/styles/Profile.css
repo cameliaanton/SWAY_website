@@ -1,0 +1,210 @@
+.profile-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f3f4f6;
+    /* Slightly off-white background for modern look */
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+}
+
+.profile-container h1 {
+    margin-bottom: 20px;
+    font-size: 32px;
+    /* Increased font size for better readability */
+    color: #333;
+}
+
+.profile-container .user-name {
+    color: #E74C3C;
+}
+
+.profile-content {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 20px;
+    /* Add gap to adjust the distance between profile details and sidebar */
+}
+
+.profile-details {
+    width: 40%;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* More pronounced shadow for modern look */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Smooth transition effects */
+}
+
+.profile-details:hover {
+    transform: translateY(-5px);
+    /* Subtle lift effect on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    /* Enhanced shadow on hover */
+}
+
+.profile-details h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+    /* Slightly larger font size */
+}
+
+.profile-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="date"] {
+    width: 100%;
+    /* Full width for better form layout */
+    max-width: 400px;
+    /* Constrain the width for large screens */
+    padding: 10px;
+    border: 1px solid #ccc;
+    /* Light border color for a clean look */
+    border-radius: 5px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    /* Smooth transitions */
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="date"]:focus {
+    border-color: #E74C3C;
+    /* Highlight border on focus */
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.2);
+    /* Add slight shadow on focus */
+}
+
+.form-group.gender {
+    display: flex;
+    align-items: center;
+}
+
+.form-group.gender label {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.form-group.gender input {
+    margin-right: 5px;
+}
+
+.form-group.subscribe label {
+    display: flex;
+    align-items: center;
+}
+
+.phone-input {
+    display: flex;
+    align-items: center;
+}
+
+.phone-input select {
+    margin-right: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.phone-input select:focus {
+    border-color: #E74C3C;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.2);
+}
+
+.save-button {
+    padding: 10px 20px;
+    background-color: #E74C3C;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.save-button:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+    /* Slight lift effect on hover */
+}
+
+.profile-sidebar {
+    width: 30%;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-sidebar:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.profile-sidebar h2 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 20px;
+    /* Slightly larger font size */
+}
+
+.profile-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.profile-sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.profile-sidebar ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    /* Smooth color transition */
+}
+
+.profile-sidebar ul li a:hover {
+    text-decoration: underline;
+    color: #E74C3C;
+}
+
+.delete-account-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.delete-account-button:hover {
+    background-color: #ff1a1a;
+}
