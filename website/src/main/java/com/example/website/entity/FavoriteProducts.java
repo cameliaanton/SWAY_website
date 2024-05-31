@@ -25,4 +25,7 @@ public class FavoriteProducts {
     @JoinColumn(name = "customer_id", nullable = false)
     @JsonBackReference
     private Customer customer;
+    public Long getUserId() {
+        return this.customer != null ? this.customer.getId() : null;
+    }
 }

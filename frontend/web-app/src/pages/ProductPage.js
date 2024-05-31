@@ -15,7 +15,7 @@ function ProductPage() {
     const [sizeProducts, setSizeProducts] = useState(null);
     const [showDescription, setShowDescription] = useState(false);
     const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-    const [user, setUser] = useState(null); // Retrieve the logged-in user from cookies or state
+    const [user, setUser] = useState(null);
 
     const fetchProduct = async () => {
         try {
@@ -75,7 +75,7 @@ function ProductPage() {
             await axios.post(`${apiBaseURL}/shoppingCart`, {
                 userId: user.id,
                 productId: product.id,
-                quantity: 1, // Default quantity to 1
+                quantity: 1,
                 size: sizeProducts
             });
             alert("Product added to cart successfully");

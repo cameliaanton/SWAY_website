@@ -12,6 +12,7 @@ function Products({ user }) {
     const [error, setError] = useState(null);
     const [sortOption, setSortOption] = useState('default');
     const [favoriteProducts, setFavoriteProducts] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
     const location = useLocation();
     const gender = location.state?.gender || 'all';
@@ -114,6 +115,12 @@ function Products({ user }) {
         navigate(`/product/${id}`);
     };
 
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase())
+        // product.style.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
         <div className='products'>
             <h1 className='productsTitle'>Our Products</h1>
@@ -124,10 +131,16 @@ function Products({ user }) {
                     <option value="desc">Sort Descending</option>
                 </select>
                 <button onClick={sortProducts}>Filter</button>
+                <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
             </div>
             <div className='productsList'>
-                {products.length > 0 ? (
-                    products.map((product) => (
+                {filteredProducts.length > 0 ? (
+                    filteredProducts.map((product) => (
                         <div key={product.id} className='productItem'>
                             <div className='productImages' onClick={() => navigateToProductPage(product.id)}>
                                 <img

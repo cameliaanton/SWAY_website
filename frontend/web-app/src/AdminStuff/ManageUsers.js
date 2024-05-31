@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../styles/manageUsers.css'; // Add appropriate styling
+import { FaArrowLeft } from 'react-icons/fa';
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredUsers, setFilteredUsers] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchUsers();
@@ -36,7 +39,7 @@ const ManageUsers = () => {
 
     const handleDeleteUser = async (userId) => {
         try {
-            await axios.delete(`http://localhost:8080/admin/users/${userId}`);
+            await axios.delete(`http://localhost:8080/admin/user/${userId}`);
             setUsers(users.filter(user => user.id !== userId));
         } catch (error) {
             console.error("Error deleting user:", error);
@@ -44,11 +47,16 @@ const ManageUsers = () => {
     };
 
     const handleUpdateUser = (user) => {
-        // Navigate to the update user page or show an update form
+        navigate(`/admin/update-user/${user.id}`);
     };
-
+    const handleAddUser = () => {
+        navigate('/admin/add-user');
+    };
     return (
         <div className="manage-users-container">
+            <button className="back-button" onClick={() => navigate('/admin')}>
+                <FaArrowLeft /> Back to Admin
+            </button>
             <h1>Manage Users</h1>
             <div className="search-bar">
                 <input
@@ -58,6 +66,8 @@ const ManageUsers = () => {
                     onChange={(e) => setSearchQuery(e.target.value)}
                 />
             </div>
+            <button className="add-user-button" onClick={handleAddUser}>Add User</button>
+
             <table className="users-table">
                 <thead>
                     <tr>

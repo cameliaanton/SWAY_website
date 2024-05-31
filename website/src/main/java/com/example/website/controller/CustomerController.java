@@ -1,5 +1,6 @@
 package com.example.website.controller;
 
+import com.example.website.EmailSenderService;
 import com.example.website.dto.*;
 import com.example.website.entity.*;
 import com.example.website.service.OrderService;
@@ -19,6 +20,40 @@ import java.util.Optional;
 public class CustomerController {
     private final UserService userService;
     private final OrderService orderService;
+    private final EmailSenderService emailSenderService;
+    @GetMapping("/user/{userId}/cart/count")
+    public ResponseEntity<Integer> getCartCount(@PathVariable Long userId) {
+        int cartCount = userService.getCartCount(userId);
+        return new ResponseEntity<>(cartCount, HttpStatus.OK);
+    }
+    @GetMapping("/sendSubscriptionEmail")
+    public ResponseEntity<Void> sendSubscriptionEmail(@RequestParam String email) {
+        Optional<User> customer = userService.getUser(email);
+        if (customer.isPresent()) {
+            sendSubscriptionEmail(customer.get());
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+    private void sendSubscriptionEmail(User customer) {
+        String emailText = generateEmailTextSubscription(customer);
+        emailSenderService.sendEmail(customer.getEmail(), "Sway Subscription Confirmation", emailText);
+    }
+    private String generateEmailTextSubscription(User customer) {
+        return new StringBuilder()
+                .append("Dear ").append(customer.getName()).append(",\n\n")
+                .append("Thank you for subscribing to our newsletter!\n")
+                .append("You will now receive updates and special offers from Sway.\n\n")
+                .append("Best regards,\n")
+                .append("The Sway Team")
+                .toString();
+    }
+    @GetMapping("/user/{userId}/favorites/count")
+    public ResponseEntity<Integer> getFavoriteCount(@PathVariable Long userId) {
+        int favoriteCount = userService.getFavoriteCount(userId);
+        return new ResponseEntity<>(favoriteCount, HttpStatus.OK);
+    }
     @DeleteMapping("/deleteUser")
     public ResponseEntity<?> deleteUser(@RequestParam Long id) {
         try {
@@ -28,7 +63,6 @@ public class CustomerController {
             return new ResponseEntity<>("Failed to delete user.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     @DeleteMapping("order/{orderId}")
     public void deleteOrder(@PathVariable Long orderId){
         orderService.deleteOrder(orderId);
@@ -103,7 +137,6 @@ public class CustomerController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
-
     @GetMapping("/shoppingCart/{id}")
     public ResponseEntity<?> getShoppingCartProducts(@PathVariable Long id){
         try{

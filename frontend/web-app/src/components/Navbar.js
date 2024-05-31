@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp'; // Logout icon
 
-function Navbar({ user, onLogout }) {
+function Navbar({ user, onLogout, cartCount, favoriteCount }) {
     const [openLinks, setOpenLinks] = useState(false);
     const navigate = useNavigate();
 
@@ -28,6 +28,7 @@ function Navbar({ user, onLogout }) {
             navigate('/login');
         }
     };
+
     const handleShoppingCart = () => {
         if (user) {
             navigate('/cart', { state: { user } });
@@ -36,7 +37,6 @@ function Navbar({ user, onLogout }) {
         }
     };
 
-    // Use useEffect to handle window resize
     useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth > 600) {
@@ -59,11 +59,18 @@ function Navbar({ user, onLogout }) {
             </div>
             <div className={`rightSide ${openLinks ? "open" : "close"}`}>
                 <Link to="/">Home</Link>
+                <Link to="/products">Products</Link>
                 {user ? (
                     <>
                         <Link to="/profile"><AccountCircleIcon /></Link>
-                        <button onClick={handleShoppingCart}><ShoppingCartIcon /></button>
-                        <button onClick={handleFavorites}><FavoriteIcon /></button>
+                        <button onClick={handleShoppingCart} className="icon-button">
+                            <ShoppingCartIcon />
+                            {cartCount > 0 && <span className="badge">{cartCount}</span>}
+                        </button>
+                        <button onClick={handleFavorites} className="icon-button">
+                            <FavoriteIcon />
+                            {favoriteCount > 0 && <span className="badge">{favoriteCount}</span>}
+                        </button>
                         <button onClick={handleLogout} className="logout-button"><ExitToAppIcon /></button>
                     </>
                 ) : (
@@ -82,8 +89,14 @@ function Navbar({ user, onLogout }) {
                     {user ? (
                         <>
                             <Link to="/profile"><AccountCircleIcon /></Link>
-                            <button onClick={handleShoppingCart}><ShoppingCartIcon /></button>
-                            <button onClick={handleFavorites}><FavoriteIcon /></button>
+                            <button onClick={handleShoppingCart} className="icon-button">
+                                <ShoppingCartIcon />
+                                {cartCount > 0 && <span className="badge">{cartCount}</span>}
+                            </button>
+                            <button onClick={handleFavorites} className="icon-button">
+                                <FavoriteIcon />
+                                {favoriteCount > 0 && <span className="badge">{favoriteCount}</span>}
+                            </button>
                             <button onClick={handleLogout} className="logout-button"><ExitToAppIcon /></button>
                         </>
                     ) : (

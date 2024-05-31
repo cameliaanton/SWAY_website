@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface FavoriteProductsRepository extends JpaRepository<FavoriteProducts, Long> {
     List<FavoriteProducts> findByCustomerId(Long userId);
+
+    int countByCustomer_Id(Long customerId);
 }

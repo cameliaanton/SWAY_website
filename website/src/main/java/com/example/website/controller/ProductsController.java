@@ -17,14 +17,17 @@ import java.util.List;
 @AllArgsConstructor
 public class ProductsController {
     private final ProductService productService;
+
     @GetMapping("/products/{gender}")
-    public List<Products> getProductsByGender(@PathVariable ProductGender gender){
+    public List<Products> getProductsByGender(@PathVariable ProductGender gender) {
         return productService.getProductsByGender(gender);
     }
+
     @PostMapping("/addProduct")
-    public Products createProduct(@RequestBody Products product){
+    public Products createProduct(@RequestBody Products product) {
         return productService.addProduct(product);
     }
+
     @GetMapping("/allProducts")
     public List<Products> getAllProducts() {
         System.out.println("Fetching all products");
@@ -32,40 +35,48 @@ public class ProductsController {
         System.out.println("Products fetched: " + products.size());
         return products;
     }
+
     @GetMapping("/product/color/{id}")
-    public HashMap<Color,Products> getColorProducts(@PathVariable Long id){
-        Products products=productService.getProductById(id);
+    public HashMap<Color, Products> getColorProducts(@PathVariable Long id) {
+        Products products = productService.getProductById(id);
         return productService.colorProducts(products);
     }
+
     @PostMapping("/product/asc")
-    public List<Products> getProductsAscending(@RequestBody List<Products> productsList){
+    public List<Products> getProductsAscending(@RequestBody List<Products> productsList) {
         return productService.sortByAscendingPrice(productsList);
     }
+
     @PostMapping("/product/desc")
-    public List<Products> getProductsDescending(@RequestBody List<Products> productsList){
+    public List<Products> getProductsDescending(@RequestBody List<Products> productsList) {
         return productService.sortByDownwardPrice(productsList);
     }
+
     @PostMapping("/product/random")
-    public List<Products> getProductsRandom(@RequestBody List<Products> productsList){
+    public List<Products> getProductsRandom(@RequestBody List<Products> productsList) {
         return productService.sortByShuffleProducts(productsList);
     }
+
     @GetMapping("/product/{id}")
-    public  Products getProductID(@PathVariable Long id){
+    public Products getProductID(@PathVariable Long id) {
         return productService.getProductById(id);
     }
+
     @GetMapping("/product/{id}/inventory")
-    public  List<Inventory> getInventoryByProduct(@PathVariable Long id){
+    public List<Inventory> getInventoryByProduct(@PathVariable Long id) {
         Products product = getProductID(id);
-        List<Inventory> inventory=productService.getInventoryByProduct(product);
-        return  inventory;
+        List<Inventory> inventory = productService.getInventoryByProduct(product);
+        return inventory;
     }
+
     @GetMapping("/product/{id}/size/{size}")
-    public  List<Inventory> getInventoryByProductBySize(@PathVariable Long id,@PathVariable Size size){
+    public List<Inventory> getInventoryByProductBySize(@PathVariable Long id, @PathVariable Size size) {
         Products product = getProductID(id);
-        return productService.getInventoryByProductAndSize(product,size);
+        return productService.getInventoryByProductAndSize(product, size);
     }
+
     @PutMapping("/product/{id}")
-    public Products updateProduct(@PathVariable Long id,@RequestBody Products product){
-        return productService.updateProduct(id,product);
+    public Products updateProduct(@PathVariable Long id, @RequestBody Products product) {
+        return productService.updateProduct(id, product);
     }
 }

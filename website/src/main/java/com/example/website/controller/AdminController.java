@@ -1,6 +1,7 @@
 package com.example.website.controller;
 
 import com.example.website.dto.ProductsDTO;
+import com.example.website.dto.RegisterClient;
 import com.example.website.entity.Products;
 import com.example.website.entity.User;
 import com.example.website.service.ProductService;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @CrossOrigin
@@ -29,6 +31,21 @@ public class AdminController {
         Products addedProduct = productService.addProduct(products);
         return new ResponseEntity<>(addedProduct, HttpStatus.CREATED);
     }
+    @PutMapping("product/{id}")
+    public ResponseEntity<Products> updateProduct(@PathVariable Long id,@RequestBody Products updateProduct) {
+        productService.updateProduct(id,updateProduct);
+        return new ResponseEntity<>(updateProduct,HttpStatus.OK);
+    }
+    @DeleteMapping("product/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @GetMapping("/product/{id}")
+    public ResponseEntity<Products> getProduct(@PathVariable Long id) {
+        Products products = productService.getProductById(id);
+        return new ResponseEntity<>(products, HttpStatus.OK);
+    }
 
     @GetMapping("/products")
     public ResponseEntity<List<Products>> allProducts() {
@@ -42,7 +59,30 @@ public class AdminController {
         List<User> users = userService.getUsers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
-
+    @GetMapping("user/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        Optional<User> user = userService.getUser(id);
+        return new ResponseEntity<>(user.get(), HttpStatus.OK);
+    }
+    @PostMapping("/addUser")
+    public ResponseEntity<Long> addUser(@RequestBody RegisterClient user) {
+        Long addedUser;
+        if(user.getUser().getRole()==0)
+            addedUser = userService.registerAdmin(user);
+        else
+            addedUser = userService.registerEmployee(user);
+        return new ResponseEntity<>(addedUser, HttpStatus.CREATED);
+    }
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+    @PutMapping("/users/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        User user = userService.updateUser(id, updatedUser);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
     /*/ Report management endpoint
     @GetMapping("/reports")
     public ResponseEntity<?> getReports() {

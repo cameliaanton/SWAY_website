@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.scheduling.support.SimpleTriggerContext;
 
 import java.time.LocalDateTime;
@@ -27,25 +28,30 @@ public class Orders {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     @JsonBackReference
+    @ToString.Exclude
     private Customer customer;
 
     @Column(name= "payment_sum", nullable = false)
     private Double paymentSum;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false, length = 20)  // Ensure sufficient length
+    @Column(name = "status", nullable = false, length = 40)  // Ensure sufficient length
     private OrderStatus status;
 
     @Column(name="date_time", nullable = false)
     private LocalDateTime dateTime;
+
     @Column(name = "devilvery_method")
     private String delivery_method;
+
     @Column(name="pay_method")
     private String payMethod;
+
     @Column(name="delivery_address")
     private String deliveryAddress;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "order")
     @JsonManagedReference
+    @ToString.Exclude
     private List<OrderedProducts> orderedProducts = new ArrayList<>();
 }

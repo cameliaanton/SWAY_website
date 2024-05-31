@@ -51,4 +51,24 @@ public abstract class User {
 
     @Column(name = "role", insertable = false, updatable = false)
     private Integer role;
+
+    public String getType() {
+        switch (this.role) {
+            case ADMIN:
+                return "admin";
+            case CUSTOMER:
+                return "customer";
+            case EMPLOYEE:
+                return "employee";
+            default:
+                return null;
+        }
+    }
+    public void setType(String type) {
+        if ("admin".equalsIgnoreCase(type)) {
+            this.role = ADMIN;
+        } else if ("employee".equalsIgnoreCase(type)) {
+            this.role = EMPLOYEE;
+        }
+    }
 }

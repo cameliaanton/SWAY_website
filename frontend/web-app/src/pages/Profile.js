@@ -51,10 +51,24 @@ const Profile = ({ user }) => {
         })
             .then(response => {
                 alert('Data updated successfully!');
+                if (userData.subscribe) {
+                    sendSubscriptionEmail(userData.email);
+                }
             })
             .catch(error => {
                 console.error(error);
                 alert('Error updating data.');
+            });
+    };
+
+    const sendSubscriptionEmail = (email) => {
+        axios.get(`http://localhost:8080/sendSubscriptionEmail`, { params: { email } })
+            .then(response => {
+                alert('Subscription email sent successfully!');
+            })
+            .catch(error => {
+                console.error('Error sending subscription email:', error);
+                alert('Error sending subscription email.');
             });
     };
 

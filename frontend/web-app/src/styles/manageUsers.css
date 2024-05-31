@@ -1,52 +1,152 @@
+/* manageUsers.css */
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
 .manage-users-container {
-    width: 80%;
-    margin: 0 auto;
-    padding: 20px;
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 20px 40px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.manage-users-container:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.manage-users-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 28px;
+    color: #333;
+}
+
+.back-button {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #6c757d;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.back-button svg {
+    margin-right: 10px;
+}
+
+.back-button:hover {
+    background-color: #5a6268;
+    transform: scale(1.05);
 }
 
 .search-bar {
+    display: flex;
+    justify-content: center;
     margin-bottom: 20px;
 }
 
 .search-bar input {
     width: 100%;
+    max-width: 500px;
     padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar input:focus {
+    border-color: #007bff;
+}
+
+.add-user-button {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.add-user-button:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
 }
 
 .users-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .users-table th,
 .users-table td {
-    border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px 15px;
     text-align: left;
+    border-bottom: 1px solid #ddd;
 }
 
 .users-table th {
-    background-color: #f4f4f4;
+    background-color: #007bff;
+    color: white;
+}
+
+.users-table tr:nth-child(even) {
+    background-color: #f9f9f9;
 }
 
 .users-table tr:hover {
     background-color: #f1f1f1;
 }
 
-button {
-    padding: 5px 10px;
-    margin: 0 5px;
+.users-table button {
+    padding: 6px 12px;
     border: none;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s ease;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-button:hover {
-    background-color: #0056b3;
+.users-table button:hover {
+    transform: scale(1.05);
+}
+
+.users-table button:nth-child(1) {
+    background-color: #28a745;
+}
+
+.users-table button:nth-child(1):hover {
+    background-color: #218838;
+}
+
+.users-table button:nth-child(2) {
+    background-color: #dc3545;
+}
+
+.users-table button:nth-child(2):hover {
+    background-color: #c82333;
+}
+
+.error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
 }

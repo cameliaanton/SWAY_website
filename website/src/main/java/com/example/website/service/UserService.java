@@ -1,7 +1,6 @@
 package com.example.website.service;
 
 
-
 import com.example.website.EmailSenderService;
 import com.example.website.dto.*;
 import com.example.website.entity.*;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,75 +27,88 @@ public class UserService {
     private final UserRepository userRepository;
     private final OrdersRepository ordersRepository;
     private final OrderedProductsRepository orderedProductsRepository;
-    private  final PasswordRepository passwordRepository;
+    private final PasswordRepository passwordRepository;
     private final ProductRepository productRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final FavoriteProductsRepository favoriteProductsRepository;
     @Autowired
     private EmailSenderService emailSenderService;
-    public User addEmployee(User user){
+
+    public User addEmployee(User user) {
         validateUser(user);
         user.setRole(2);
         return userRepository.save(user);
     }
-    public Long registerEmployee(RegisterClient registerClient){
-        if(registerClient.getPassword().isBlank() || registerClient.getRepeatPassword().isBlank())
-            throw  new RuntimeException("Invalid Password");
-        if(!registerClient.getPassword().equals(registerClient.getRepeatPassword()))
+
+    public Long registerEmployee(RegisterClient registerClient) {
+        if (registerClient.getPassword().isBlank() || registerClient.getRepeatPassword().isBlank())
+            throw new RuntimeException("Invalid Password");
+        if (!registerClient.getPassword().equals(registerClient.getRepeatPassword()))
             throw new RuntimeException("Password is not the same!");
-        Long userId=addEmployee(registerClient.getUser()).getId();
-        byte[] salt= generateSalt();
-        String hashedPassword= hashPassword(registerClient.getPassword(),salt);
-        Password password= new Password(null,userId,hashedPassword,salt);
+        Long userId = addEmployee(registerClient.getUser()).getId();
+        byte[] salt = generateSalt();
+        String hashedPassword = hashPassword(registerClient.getPassword(), salt);
+        Password password = new Password(null, userId, hashedPassword, salt);
         passwordRepository.save(password);
         return userId;
     }
-    public User addAdmin(User user){
+
+    public User addAdmin(User user) {
         validateUser(user);
         user.setRole(0);
         User saved = userRepository.save(user);
         return saved;
     }
-    public List<User> getUsers()
-    {
+
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
-    public Long registerAdmin(RegisterClient registerClient){
-        if(registerClient.getPassword().isBlank() || registerClient.getRepeatPassword().isBlank())
-            throw  new RuntimeException("Invalid Password");
-        if(!registerClient.getPassword().equals(registerClient.getRepeatPassword()))
+
+    public Long registerAdmin(RegisterClient registerClient) {
+        if (registerClient.getPassword().isBlank() || registerClient.getRepeatPassword().isBlank())
+            throw new RuntimeException("Invalid Password");
+        if (!registerClient.getPassword().equals(registerClient.getRepeatPassword()))
             throw new RuntimeException("Password is not the same!");
-        Long userId=addAdmin(registerClient.getUser()).getId();
-        byte[] salt= generateSalt();
-        String hashedPassword= hashPassword(registerClient.getPassword(),salt);
-        Password password= new Password(null,userId,hashedPassword,salt);
+        Long userId = addAdmin(registerClient.getUser()).getId();
+        byte[] salt = generateSalt();
+        String hashedPassword = hashPassword(registerClient.getPassword(), salt);
+        Password password = new Password(null, userId, hashedPassword, salt);
         passwordRepository.save(password);
         return userId;
     }
-    public Optional<User> getUser(String email){
+
+    public Optional<User> getUser(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public Optional<User> getUser(Long id) {
+        return userRepository.findById(id);
+    }
+
     public User login(Login login) {
-        Optional<User> userLogin= userRepository.findByUsername(login.getUsername());
-        if(userLogin.isEmpty())
-            userLogin =userRepository.findByEmail(login.getUsername());
-        if(userLogin.isEmpty())
+        Optional<User> userLogin = userRepository.findByUsername(login.getUsername());
+        if (userLogin.isEmpty())
+            userLogin = userRepository.findByEmail(login.getUsername());
+        if (userLogin.isEmpty())
             throw new RuntimeException("Username or email incorrect");
-        User user=userLogin.get();
+        User user = userLogin.get();
         Optional<Password> optionalPassword = passwordRepository.findByUserId(user.getId());
-        if(optionalPassword.isEmpty())
+        if (optionalPassword.isEmpty())
             throw new RuntimeException("User or password incorrect!");
         Password password = optionalPassword.get();
         String hashedPassword = hashPassword(login.getPassword(), password.getSalt());
-        if(hashedPassword == null || password.getPassword().compareTo(hashedPassword) != 0)
+        if (hashedPassword == null || password.getPassword().compareTo(hashedPassword) != 0)
             throw new RuntimeException("User or password incorrect!");
+        System.out.println(user);
         return user;
     }
-    public User addClient(User user){
+
+    public User addClient(User user) {
         validateUser(user);
         user.setRole(User.CUSTOMER);
         return userRepository.save(user);
     }
+
     @Transactional
     public Optional<Orders> confirmOrder(Long orderId, String deliveryMethod, String paymentMethod, String address, Double totalPayment) {
         Optional<Orders> optionalOrder = ordersRepository.findById(orderId);
@@ -110,6 +121,7 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     private void updateOrderDetails(Orders order, String deliveryMethod, String paymentMethod, String address, Double totalPayment) {
         order.setDelivery_method(deliveryMethod);
         order.setPayMethod(paymentMethod);
@@ -117,6 +129,7 @@ public class UserService {
         order.setStatus(OrderStatus.PAYED);
         order.setPaymentSum(totalPayment);
     }
+
     private void updateInventory(Orders order) {
         for (OrderedProducts orderedProduct : order.getOrderedProducts()) {
             Products product = productRepository.findById(orderedProduct.getProductId())
@@ -132,6 +145,7 @@ public class UserService {
             productRepository.save(product); // Save the updated product inventory
         }
     }
+
     // Add this method to your UserService.java
    /* @Transactional
     public void returnProductsToCart(Long userId, List<ReturnProductDTO> products) {
@@ -160,6 +174,7 @@ public class UserService {
         String emailText = generateEmailTextOrder(order);
         emailSenderService.sendEmail(order.getCustomer().getEmail(), "Sway Order Confirmation", emailText);
     }
+
     private String generateEmailTextOrder(Orders order) {
         StringBuilder text = new StringBuilder();
         text.append("Thank you for your order!\n\n")
@@ -182,21 +197,24 @@ public class UserService {
 
         return text.toString();
     }
-    public List<Orders> getAllOrders(Long userId){
+
+    public List<Orders> getAllOrders(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer customer) {
             return customer.getOrdersList();
         }
         return null;
     }
+
     public Optional<List<Products>> getOrdersProducts(Long orderId) {
-        Optional<Orders> orders= ordersRepository.findById(orderId);
-        List<OrderedProducts> orderedProducts=orders.get().getOrderedProducts();
-        List<Products> products=orderedProducts.stream()
-                .map(p-> productRepository.findById(p.getProductId()).get())
+        Optional<Orders> orders = ordersRepository.findById(orderId);
+        List<OrderedProducts> orderedProducts = orders.get().getOrderedProducts();
+        List<Products> products = orderedProducts.stream()
+                .map(p -> productRepository.findById(p.getProductId()).get())
                 .toList();
         return Optional.of(products);
     }
+
     public Optional<Orders> getOrderInProcessing(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer) {
@@ -208,6 +226,7 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     @Transactional
     public void addOrder(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -251,6 +270,7 @@ public class UserService {
             shoppingCartRepository.deleteAll(cartList);
         }
     }
+
     @Transactional
     public void updateQuantity(Long cartItemId, Integer quantity) {
         ShoppingCart shoppingCart = shoppingCartRepository.findById(cartItemId)
@@ -297,8 +317,7 @@ public class UserService {
         return Optional.empty();
     }
 
-    public Optional<List<ShoppingCart>> getShoppingCartsProduct(Long userId)
-    {
+    public Optional<List<ShoppingCart>> getShoppingCartsProduct(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer) {
             Customer customer = (Customer) optionalUser.get();
@@ -314,14 +333,13 @@ public class UserService {
             Customer customer = (Customer) optionalUser.get();
             System.out.println("oo customer");
             Optional<ShoppingCart> existingCartItem = shoppingCartRepository.findByCustomerIdAndProductIdAndSize(customer.getId(), productId, size);
-            if(existingCartItem.isPresent()){
+            if (existingCartItem.isPresent()) {
 
                 ShoppingCart cartItem = existingCartItem.get();
-                cartItem.setQuantity(cartItem.getQuantity()+quantity);
-            }
-            else {
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+            } else {
                 System.out.println("new");
-                ShoppingCart newCartItem= new ShoppingCart();
+                ShoppingCart newCartItem = new ShoppingCart();
                 newCartItem.setProductId(productId);
                 newCartItem.setQuantity(quantity);
                 newCartItem.setSize(size);
@@ -334,6 +352,7 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     public Optional<User> addFavoriteProduct(Long userId, Long productId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer) {
@@ -356,8 +375,8 @@ public class UserService {
         }
         return Optional.empty();
     }
-    public Optional<List<FavoriteProducts>> getFavoriteProduct(Long userId)
-    {
+
+    public Optional<List<FavoriteProducts>> getFavoriteProduct(Long userId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer) {
             Customer customer = (Customer) optionalUser.get();
@@ -380,6 +399,7 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     public Optional<User> deleteFavoriteProduct(Long userId, Long productId) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer) {
@@ -400,6 +420,7 @@ public class UserService {
         }
         return Optional.empty();
     }
+
     public Optional<User> updateCustomer(Long id, CustomerDTO customerDTO) {
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer) {
@@ -416,34 +437,38 @@ public class UserService {
         }
         return Optional.empty();
     }
-    public Long register(RegisterClient registerClient){
-        if(registerClient.getPassword().isBlank() || registerClient.getRepeatPassword().isBlank())
-            throw  new RuntimeException("Invalid Password");
-        if(!registerClient.getPassword().equals(registerClient.getRepeatPassword()))
+
+    public Long register(RegisterClient registerClient) {
+        if (registerClient.getPassword().isBlank() || registerClient.getRepeatPassword().isBlank())
+            throw new RuntimeException("Invalid Password");
+        if (!registerClient.getPassword().equals(registerClient.getRepeatPassword()))
             throw new RuntimeException("Password is not the same!");
-        Long userId=addClient(registerClient.getUser()).getId();
-        byte[] salt= generateSalt();
-        String hashedPassword= hashPassword(registerClient.getPassword(),salt);
-        Password password= new Password(null,userId,hashedPassword,salt);
+        Long userId = addClient(registerClient.getUser()).getId();
+        byte[] salt = generateSalt();
+        String hashedPassword = hashPassword(registerClient.getPassword(), salt);
+        Password password = new Password(null, userId, hashedPassword, salt);
         passwordRepository.save(password);
         return userId;
     }
-    private void validateUser(User user){
-        if(user.getName().isBlank() ){
+
+    private void validateUser(User user) {
+        if (user.getName().isBlank()) {
             throw new RuntimeException("Invalid name!");
         }
-        if(user.getUsername().isBlank()){
+        if (user.getUsername().isBlank()) {
             throw new RuntimeException("Invalid username!");
         }
-        if(user.getEmail().isBlank()||!validEmail(user.getEmail())){
+        if (user.getEmail().isBlank() || !validEmail(user.getEmail())) {
             throw new RuntimeException("Invalid Email!");
         }
 
     }
-    private boolean validEmail(String email){
-        String emailRegex= "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+    private boolean validEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(emailRegex);
     }
+
     public Optional<User> changePassword(String email, String password, String repeatPassword) {
         Optional<User> existingUser = userRepository.findByEmail(email);
         if (existingUser.isPresent()) {
@@ -467,7 +492,29 @@ public class UserService {
     }
 
     public void deleteUser(Long userId) {
+        System.out.println("delete" + userId);
         userRepository.deleteById(userId);
     }
 
+    public User updateUser(Long userId, User updatedUser) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User existingUser = optionalUser.get();
+            existingUser.setName(updatedUser.getName());
+            existingUser.setUsername(updatedUser.getUsername());
+            existingUser.setEmail(updatedUser.getEmail());
+            existingUser.setType(updatedUser.getType());
+            return userRepository.save(existingUser);
+        } else {
+            throw new RuntimeException("User not found");
+        }
+    }
+
+    public int getCartCount(Long userId) {
+        return shoppingCartRepository.countByCustomer_Id(userId);
+    }
+
+    public int getFavoriteCount(Long userId) {
+        return favoriteProductsRepository.countByCustomer_Id(userId);
+    }
 }

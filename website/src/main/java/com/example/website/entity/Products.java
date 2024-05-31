@@ -45,6 +45,7 @@ public class Products {
     @CollectionTable(name = "subcategories", joinColumns = @JoinColumn(name = "id"))
     @Column(name = "subcategory")
     private Set<SubCategory> subCategories;
+
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_url")
@@ -57,7 +58,6 @@ public class Products {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Inventory> inventories;
-
 
 
 

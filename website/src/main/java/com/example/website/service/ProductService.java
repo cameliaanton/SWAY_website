@@ -21,38 +21,45 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productsRepository;
     private final InventoryRepository inventoryRepository;
-    public HashMap<Color,Products> colorProducts(Products products){
-        List<Products> productsColorList= findDifferentColors(products);
-        HashMap<Color,Products> colorProductsHashMap= new HashMap<>();
-        for(Products p: productsColorList){
-            colorProductsHashMap.put(p.getColor(),p);
+
+    public HashMap<Color, Products> colorProducts(Products products) {
+        List<Products> productsColorList = findDifferentColors(products);
+        HashMap<Color, Products> colorProductsHashMap = new HashMap<>();
+        for (Products p : productsColorList) {
+            colorProductsHashMap.put(p.getColor(), p);
         }
         return colorProductsHashMap;
     }
-    public List<Products> getProductsByGender(ProductGender productGender){
-        List<Products> productsList=getProducts();
-        return productsList.stream().filter(p-> (p.getGender().equals(productGender)) || (p.getGender().equals("UNISEX")))
+
+    public List<Products> getProductsByGender(ProductGender productGender) {
+        List<Products> productsList = getProducts();
+        return productsList.stream().filter(p -> (p.getGender().equals(productGender)) || (p.getGender().equals("UNISEX")))
                 .collect(Collectors.toList());
     }
-    public List<Products> findDifferentColors(Products products){
-        List<Products> productsList= getProducts();
-        return productsList.stream().filter(p->p.getName().equals(products.getName()))
-                .filter(p->p.getGender().equals(products.getGender()))
-                .filter(p->!p.getColor().equals(products.getColor()))
+
+    public List<Products> findDifferentColors(Products products) {
+        List<Products> productsList = getProducts();
+        return productsList.stream().filter(p -> p.getName().equals(products.getName()))
+                .filter(p -> p.getGender().equals(products.getGender()))
+                .filter(p -> !p.getColor().equals(products.getColor()))
                 .collect(Collectors.toList());
     }
-    public List<Products> sortByAscendingPrice(List<Products> productsList){
+
+    public List<Products> sortByAscendingPrice(List<Products> productsList) {
         return productsList.stream().sorted(Comparator.comparing(Products::getPrice))
                 .collect(Collectors.toList());
     }
-    public List<Products> sortByDownwardPrice(List<Products> productsList){
+
+    public List<Products> sortByDownwardPrice(List<Products> productsList) {
         return productsList.stream().sorted(Comparator.comparing(Products::getPrice))
                 .collect(Collectors.toList()).reversed();
     }
-    public List<Products> sortByShuffleProducts(List<Products> productsList){
+
+    public List<Products> sortByShuffleProducts(List<Products> productsList) {
         Collections.shuffle(productsList);
         return productsList;
     }
+
     public Products getProductById(Long id) {
         return productsRepository.findById(id).orElse(null);
     }
@@ -61,6 +68,25 @@ public class ProductService {
         List<Products> products = productsRepository.findAll();
         System.out.println("Fetched products from repository: " + products.size());
         return products;
+    }
+    @Transactional
+    public Products addProduct1(Products product) {
+        System.out.println("Saving product: " + product);
+        Products p= new Products();
+        // Salvează produsul mai întâi
+        Products savedProduct = productsRepository.save(product);
+        System.out.println(savedProduct);
+        // Salvează inventarele și setează produsul salvat pentru fiecare inventar
+        List<Inventory> inventories = product.getInventories();
+        for (Inventory inventory : inventories) {
+            inventory.setProduct(savedProduct);
+        }
+        inventoryRepository.saveAll(inventories);
+
+        // Reatașează inventarele salvate la produsul salvat
+        savedProduct.setInventories(inventories);
+
+        return savedProduct;
     }
     @Transactional
     public Products addProduct(Products product) {
@@ -74,6 +100,7 @@ public class ProductService {
 
         for (Inventory inventory : inventories) {
             inventory.setProduct(savedProduct);
+            inventoryRepository.save(inventory);
             System.out.println("Updated inventory: " + inventory);
         }
 
@@ -84,12 +111,11 @@ public class ProductService {
         return savedProduct;
     }
 
-    public String deleteProduct(Long id) {
+    public void deleteProduct(Long id) {
         productsRepository.deleteById(id);
-        return String.format("Product with ID: %d has been deleted", id);
     }
 
-    public Products updateProduct(Long id,Products product) {
+    public Products updateProduct(Long id, Products product) {
         Products existingProduct = productsRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Product not found"));
         existingProduct.setPrice(product.getPrice());
@@ -110,6 +136,7 @@ public class ProductService {
 
         return productsRepository.save(existingProduct);
     }
+
     public List<Inventory> getInventoryByProductAndSize(Products product, Size size) {
         return inventoryRepository.findByProductAndSize(product, size);
     }
@@ -117,5 +144,4 @@ public class ProductService {
     public List<Inventory> getInventoryByProduct(Products product) {
         return inventoryRepository.findByProduct(product);
     }
-
 }
