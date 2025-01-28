@@ -23,7 +23,7 @@ function Home({ user }) {
         return chunks;
     };
 
-    const groupedProducts = chunkArray(products, 5); // Group products into sets of 3
+    const groupedProducts = chunkArray(products, 4); // Group products into sets of 3
 
     const navigateToProductPage = (id) => {
         navigate(`/product/${id}`);

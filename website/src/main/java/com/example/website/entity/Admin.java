@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @DiscriminatorValue("0")
 public class Admin extends User {
-    // Admin-specific fields if any, or you can leave it empty
+
 }

@@ -45,7 +45,7 @@ const Login = ({ onLogin }) => {
                 setErrMess("Login failed: User data is not complete.");
             }
         } catch (error) {
-            onLogin(null);
+            //onLogin(null);
             if (error.response) {
                 setErrMess('Error: ' + error.response.data);
             } else {

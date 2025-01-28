@@ -16,7 +16,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 @DiscriminatorValue("1")
 public class Customer extends User {
 

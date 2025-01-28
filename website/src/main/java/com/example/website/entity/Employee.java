@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @DiscriminatorValue("2")
 public class Employee extends User {
-    // Employee-specific fields if any, or you can leave it empty
+
 }

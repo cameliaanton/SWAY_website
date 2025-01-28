@@ -146,7 +146,7 @@ public class UserService {
         }
     }
 
-    // Add this method to your UserService.java
+
    /* @Transactional
     public void returnProductsToCart(Long userId, List<ReturnProductDTO> products) {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -328,17 +328,17 @@ public class UserService {
 
     public Optional<User> addToShoppingCartProduct(Long userId, Long productId, Integer quantity, Size size) {
         Optional<User> optionalUser = userRepository.findById(userId);
-        System.out.println("buna ziua");
+        //System.out.println("buna ziua");
         if (optionalUser.isPresent() && optionalUser.get() instanceof Customer) {
             Customer customer = (Customer) optionalUser.get();
-            System.out.println("oo customer");
+           // System.out.println("oo customer");
             Optional<ShoppingCart> existingCartItem = shoppingCartRepository.findByCustomerIdAndProductIdAndSize(customer.getId(), productId, size);
             if (existingCartItem.isPresent()) {
 
                 ShoppingCart cartItem = existingCartItem.get();
                 cartItem.setQuantity(cartItem.getQuantity() + quantity);
             } else {
-                System.out.println("new");
+               // System.out.println("new");
                 ShoppingCart newCartItem = new ShoppingCart();
                 newCartItem.setProductId(productId);
                 newCartItem.setQuantity(quantity);

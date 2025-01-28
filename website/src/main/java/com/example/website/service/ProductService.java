@@ -70,25 +70,6 @@ public class ProductService {
         return products;
     }
     @Transactional
-    public Products addProduct1(Products product) {
-        System.out.println("Saving product: " + product);
-        Products p= new Products();
-        // Salvează produsul mai întâi
-        Products savedProduct = productsRepository.save(product);
-        System.out.println(savedProduct);
-        // Salvează inventarele și setează produsul salvat pentru fiecare inventar
-        List<Inventory> inventories = product.getInventories();
-        for (Inventory inventory : inventories) {
-            inventory.setProduct(savedProduct);
-        }
-        inventoryRepository.saveAll(inventories);
-
-        // Reatașează inventarele salvate la produsul salvat
-        savedProduct.setInventories(inventories);
-
-        return savedProduct;
-    }
-    @Transactional
     public Products addProduct(Products product) {
         System.out.println("Saving product: " + product);
 
